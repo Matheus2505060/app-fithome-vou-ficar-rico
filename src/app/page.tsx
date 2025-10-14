@@ -129,15 +129,15 @@ const translations: Translations = {
   }
 }
 
-// Hook para tradução
+// Hook para tradução com useCallback para estabilidade
 const useTranslation = (language: Language) => {
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     if (key === 'motivationalQuotes') {
       const quotes = translations[key][language] as string[]
       return quotes[Math.floor(Math.random() * quotes.length)]
     }
     return translations[key]?.[language] || key
-  }
+  }, [language])
   
   return { t }
 }
@@ -517,7 +517,7 @@ const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'monthly',
     name: 'Plano Mensal',
-    price: 19.90,
+    price: 27.90,
     period: 'monthly',
     features: [
       'Exercícios exclusivos premium',
@@ -531,7 +531,7 @@ const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'yearly',
     name: 'Plano Anual',
-    price: 199.00,
+    price: 199.90,
     period: 'yearly',
     discount: 17, // 17% de desconto
     popular: true,
@@ -691,7 +691,35 @@ export default function FitnessApp() {
   // Hook de tradução
   const { t } = useTranslation(userStats.language)
 
-  // Atualizar frase motivacional periodicamente
+  // Carregar script do Mercado Pago
+  useEffect(() => {
+    const loadMercadoPagoScript = () => {
+      if (typeof window !== 'undefined' && !(window as any).$MPC_loaded) {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.async = true
+        script.src = document.location.protocol + '//secure.mlstatic.com/mptools/render.js'
+        
+        const firstScript = document.getElementsByTagName('script')[0]
+        if (firstScript && firstScript.parentNode) {
+          firstScript.parentNode.insertBefore(script, firstScript)
+          ;(window as any).$MPC_loaded = true
+        }
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('load', loadMercadoPagoScript)
+    } else {
+      loadMercadoPagoScript()
+    }
+
+    return () => {
+      window.removeEventListener('load', loadMercadoPagoScript)
+    }
+  }, [])
+
+  // Atualizar frase motivacional periodicamente - CORRIGIDO
   useEffect(() => {
     const updateQuote = () => {
       const quotes = translations['motivationalQuotes'][userStats.language] as string[]
@@ -1547,17 +1575,27 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                           </li>
                         ))}
                       </ul>
-                      <Button
-                        className={`w-full mt-4 font-bold touch-manipulation ${
-                          plan.popular
-                            ? 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black'
-                            : 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white'
-                        }`}
-                        onClick={() => setSelectedPlan(plan)}
-                      >
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        {selectedPlan?.id === plan.id ? 'Plano Selecionado' : 'Escolher Plano'}
-                      </Button>
+                      
+                      {/* Botão do Mercado Pago para ambos os planos */}
+                      {plan.period === 'monthly' ? (
+                        <a
+                          href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=cac24ba523c449a6b9579b574818366f"
+                          name="MP-payButton"
+                          className="w-full mt-4 inline-block text-center bg-[#3483FA] hover:bg-[#2a68c8] text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 no-underline touch-manipulation"
+                        >
+                          <CreditCard className="w-4 h-4 inline mr-2" />
+                          Assinar com Mercado Pago
+                        </a>
+                      ) : (
+                        <a
+                          href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=ab6338e9b9304a9184cc48f2dd22ee1c"
+                          name="MP-payButton"
+                          className="w-full mt-4 inline-block text-center bg-[#3483FA] hover:bg-[#2a68c8] text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 no-underline touch-manipulation"
+                        >
+                          <CreditCard className="w-4 h-4 inline mr-2" />
+                          Assinar com Mercado Pago
+                        </a>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -1573,99 +1611,26 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
               </div>
             </div>
 
-            {/* Formulário de Pagamento */}
-            {selectedPlan && (
-              <Card className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-400/50">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Shield className="w-6 h-6 text-green-400" />
-                    Finalizar Assinatura - {selectedPlan.name}
-                  </CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Pagamento seguro via Mercado Pago
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="bg-black/30 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-300">Plano:</span>
-                      <span className="text-white font-semibold">{selectedPlan.name}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-300">Valor:</span>
-                      <span className="text-green-400 font-bold text-lg">
-                        R$ {selectedPlan.price.toFixed(2).replace('.', ',')}
-                      </span>
-                    </div>
-                    {selectedPlan.discount && (
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-300">Desconto:</span>
-                        <span className="text-yellow-400 font-semibold">
-                          {selectedPlan.discount}% OFF
-                        </span>
-                      </div>
-                    )}
-                    {selectedPlan.period === 'monthly' && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-300">Teste grátis:</span>
-                        <span className="text-cyan-400 font-semibold">7 dias</span>
-                      </div>
-                    )}
-                  </div>
+            {/* Botão de teste grátis */}
+            <div className="text-center">
+              <Button 
+                onClick={startFreeTrial}
+                variant="outline"
+                className="border-purple-400 text-purple-300 hover:bg-purple-500/20 touch-manipulation"
+              >
+                <Gift className="w-4 h-4 mr-2" />
+                Teste Grátis 7 Dias
+              </Button>
+            </div>
 
-                  <div>
-                    <Label htmlFor="email" className="text-gray-300">Email para cobrança</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={userEmail}
-                      onChange={(e) => setUserEmail(e.target.value)}
-                      placeholder="seu@email.com"
-                      className="bg-gray-700 border-gray-600 text-white mt-1"
-                      required
-                    />
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button 
-                      onClick={() => processPremiumPayment(selectedPlan)}
-                      disabled={isProcessingPayment || !userEmail.trim()}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold touch-manipulation"
-                    >
-                      {isProcessingPayment ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Processando...
-                        </>
-                      ) : (
-                        <>
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Pagar com Mercado Pago
-                        </>
-                      )}
-                    </Button>
-                    
-                    <Button 
-                      onClick={startFreeTrial}
-                      variant="outline"
-                      className="border-purple-400 text-purple-300 hover:bg-purple-500/20 touch-manipulation"
-                    >
-                      <Gift className="w-4 h-4 mr-2" />
-                      Teste Grátis 7 Dias
-                    </Button>
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">
-                      🔒 Pagamento 100% seguro • Cancele quando quiser
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Ao continuar, você concorda com nossos termos de uso
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <div className="text-center">
+              <p className="text-xs text-gray-400">
+                🔒 Pagamento 100% seguro • Cancele quando quiser
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Ao continuar, você concorda com nossos termos de uso
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
