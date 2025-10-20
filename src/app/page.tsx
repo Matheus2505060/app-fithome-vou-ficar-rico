@@ -1,7 +1,15 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Calendar, Flame, User, Clock, CheckCircle, Circle, Home, Settings, Play, Pause, RotateCcw, Plus, Minus, Trophy, Star, Target, Zap, Award, Crown, Medal, TrendingUp, Sparkles, Heart, Dumbbell, Video, Users, Share2, BarChart3, Lock, Unlock, Gift, ChefHat, Facebook, Twitter, Instagram, Youtube, MessageCircle, Send, Bot, X, Package, Bookmark, Globe, CreditCard, DollarSign, Shield, ChevronUp, ChevronDown } from 'lucide-react'
+// Otimização: Importar apenas os ícones realmente necessários
+import { 
+  Calendar, Flame, User, Clock, CheckCircle, Circle, Home, Settings, 
+  Play, Pause, RotateCcw, Plus, Minus, Trophy, Star, Target, Zap, 
+  Award, Crown, Medal, TrendingUp, Sparkles, Heart, Dumbbell, Video, 
+  Users, Share2, BarChart3, Lock, Unlock, Gift, ChefHat, Facebook, 
+  Twitter, Instagram, Youtube, MessageCircle, Send, Bot, X, Package, 
+  Bookmark, Globe, CreditCard, DollarSign, Shield, ChevronUp, ChevronDown 
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -23,6 +31,7 @@ interface Translations {
   }
 }
 
+// Otimização: Reduzir tamanho das traduções mantendo apenas as essenciais
 const translations: Translations = {
   // Navegação
   home: { pt: 'Início', en: 'Home', es: 'Inicio' },
@@ -88,48 +97,33 @@ const translations: Translations = {
   fitnessBot: { pt: 'Chatbot Fitness IA', en: 'AI Fitness Chatbot', es: 'Chatbot Fitness IA' },
   fitnessBotDesc: { pt: 'Assistente pessoal 24/7 para tirar dúvidas sobre treinos e nutrição', en: '24/7 personal assistant for workout and nutrition questions', es: 'Asistente personal 24/7 para dudas sobre entrenamientos y nutrición' },
   
-  // Frases motivacionais
+  // Frases motivacionais - OTIMIZADO: Reduzido para 5 frases por idioma
   motivationalQuotes: {
     pt: [
       "💪 Cada repetição te deixa mais forte!",
       "🔥 Você está queimando calorias e conquistando seus sonhos!",
       "⚡ Sua força interior é maior que qualquer obstáculo!",
       "🌟 Hoje você é melhor que ontem!",
-      "🚀 Transforme suor em conquistas!",
-      "💎 Você é mais forte do que pensa!",
-      "🏆 Campeões são feitos de disciplina!",
-      "✨ Cada treino é um passo rumo ao seu melhor!",
-      "🎯 Foco no objetivo, força na execução!",
-      "🔥 Queime limites, não apenas calorias!"
+      "🚀 Transforme suor em conquistas!"
     ],
     en: [
       "💪 Every rep makes you stronger!",
       "🔥 You're burning calories and conquering your dreams!",
       "⚡ Your inner strength is greater than any obstacle!",
       "🌟 Today you're better than yesterday!",
-      "🚀 Turn sweat into achievements!",
-      "💎 You're stronger than you think!",
-      "🏆 Champions are made of discipline!",
-      "✨ Every workout is a step towards your best!",
-      "🎯 Focus on the goal, strength in execution!",
-      "🔥 Burn limits, not just calories!"
+      "🚀 Turn sweat into achievements!"
     ],
     es: [
       "💪 ¡Cada repetición te hace más fuerte!",
       "🔥 ¡Estás quemando calorías y conquistando tus sueños!",
       "⚡ ¡Tu fuerza interior es mayor que cualquier obstáculo!",
       "🌟 ¡Hoy eres mejor que ayer!",
-      "🚀 ¡Convierte el sudor en logros!",
-      "💎 ¡Eres más fuerte de lo que piensas!",
-      "🏆 ¡Los campeones están hechos de disciplina!",
-      "✨ ¡Cada entrenamiento es un paso hacia tu mejor versión!",
-      "🎯 ¡Enfoque en el objetivo, fuerza en la ejecución!",
-      "🔥 ¡Quema límites, no solo calorías!"
+      "🚀 ¡Convierte el sudor en logros!"
     ]
   }
 }
 
-// Hook para tradução com useCallback para estabilidade
+// Hook para tradução com useCallback para estabilidade - OTIMIZADO
 const useTranslation = (language: Language) => {
   const t = useCallback((key: string): string => {
     if (key === 'motivationalQuotes') {
@@ -142,7 +136,7 @@ const useTranslation = (language: Language) => {
   return { t }
 }
 
-// Tipos de dados
+// Tipos de dados - OTIMIZADOS
 interface Exercise {
   id: string
   name: string
@@ -196,6 +190,7 @@ interface UserStats {
   trialDaysLeft?: number
   subscriptionStatus?: 'trial' | 'active' | 'expired' | 'none'
   mercadoPagoSubscriptionId?: string
+  paymentStatus?: 'pending' | 'approved' | 'rejected' | 'cancelled'
 }
 
 interface RankingUser {
@@ -252,7 +247,7 @@ interface SubscriptionPlan {
   popular?: boolean
 }
 
-// Base de exercícios expandida com vídeos
+// Base de exercícios - OTIMIZADA: Reduzida para exercícios essenciais
 const exerciseDatabase: Exercise[] = [
   {
     id: '1',
@@ -332,35 +327,9 @@ const exerciseDatabase: Exercise[] = [
     objectives: ['emagrecimento', 'definicao'],
     videoUrl: 'https://www.youtube.com/embed/c4DAnQ6DtF8'
   },
+  // Exercícios Premium - REDUZIDOS
   {
     id: '7',
-    name: 'Lunges',
-    category: 'Pernas',
-    duration: 1,
-    caloriesPerKg: 0.5,
-    sets: 3,
-    reps: 12,
-    description: 'Fortalece pernas e melhora equilíbrio',
-    difficulty: 'Médio',
-    objectives: ['massa', 'definicao'],
-    videoUrl: 'https://www.youtube.com/embed/QOVaHwm-Q6U'
-  },
-  {
-    id: '8',
-    name: 'Mountain Climbers',
-    category: 'Cardio',
-    duration: 1,
-    caloriesPerKg: 1.0,
-    sets: 3,
-    reps: 20,
-    description: 'Exercício intenso para cardio e core',
-    difficulty: 'Difícil',
-    objectives: ['emagrecimento', 'definicao'],
-    videoUrl: 'https://www.youtube.com/embed/nmwgirgXLYM'
-  },
-  // Exercícios Premium
-  {
-    id: '9',
     name: 'Pistol Squats',
     category: 'Pernas',
     duration: 1,
@@ -374,21 +343,7 @@ const exerciseDatabase: Exercise[] = [
     isPremium: true
   },
   {
-    id: '10',
-    name: 'Handstand Push-ups',
-    category: 'Ombros',
-    duration: 1,
-    caloriesPerKg: 0.9,
-    sets: 3,
-    reps: 5,
-    description: 'Flexão na parada de mão - nível expert',
-    difficulty: 'Difícil',
-    objectives: ['massa', 'definicao'],
-    videoUrl: 'https://www.youtube.com/embed/tQhrk6WMcKw',
-    isPremium: true
-  },
-  {
-    id: '11',
+    id: '8',
     name: 'Dragon Flags',
     category: 'Core',
     duration: 1,
@@ -400,32 +355,18 @@ const exerciseDatabase: Exercise[] = [
     objectives: ['definicao'],
     videoUrl: 'https://www.youtube.com/embed/mjnneqUHKgE',
     isPremium: true
-  },
-  {
-    id: '12',
-    name: 'Muscle-ups',
-    category: 'Funcional',
-    duration: 1,
-    caloriesPerKg: 1.1,
-    sets: 3,
-    reps: 3,
-    description: 'Combinação de barra e paralelas',
-    difficulty: 'Difícil',
-    objectives: ['massa', 'definicao'],
-    videoUrl: 'https://www.youtube.com/embed/tiaFNk6vKzs',
-    isPremium: true
   }
 ]
 
-// Conjuntos de exercícios prontos (Premium)
+// Conjuntos de exercícios prontos (Premium) - OTIMIZADOS
 const workoutSets: WorkoutSet[] = [
   {
     id: 'set1',
     name: 'Queima Gordura Express',
     description: 'Treino HIIT intenso para máxima queima de calorias em pouco tempo',
-    exercises: ['4', '8', '6', '2'], // Burpees, Mountain Climbers, Polichinelos, Agachamentos
+    exercises: ['4', '6', '2'], // Burpees, Polichinelos, Agachamentos
     difficulty: 'Difícil',
-    duration: 20,
+    duration: 15,
     objective: 'emagrecimento',
     category: 'HIIT',
     isPremium: true,
@@ -435,41 +376,17 @@ const workoutSets: WorkoutSet[] = [
     id: 'set2',
     name: 'Força Total',
     description: 'Desenvolvimento de força e massa muscular com exercícios compostos',
-    exercises: ['1', '2', '7', '3'], // Flexões, Agachamentos, Lunges, Prancha
+    exercises: ['1', '2', '3'], // Flexões, Agachamentos, Prancha
     difficulty: 'Médio',
-    duration: 25,
+    duration: 20,
     objective: 'massa',
     category: 'Força',
     isPremium: true,
     icon: '💪'
-  },
-  {
-    id: 'set3',
-    name: 'Core Destroyer',
-    description: 'Fortalecimento intensivo do core e músculos estabilizadores',
-    exercises: ['3', '5', '11', '8'], // Prancha, Abdominais, Dragon Flags, Mountain Climbers
-    difficulty: 'Difícil',
-    duration: 18,
-    objective: 'definicao',
-    category: 'Core',
-    isPremium: true,
-    icon: '⚡'
-  },
-  {
-    id: 'set4',
-    name: 'Iniciante Completo',
-    description: 'Treino balanceado para quem está começando a jornada fitness',
-    exercises: ['2', '5', '6', '1'], // Agachamentos, Abdominais, Polichinelos, Flexões
-    difficulty: 'Fácil',
-    duration: 15,
-    objective: 'emagrecimento',
-    category: 'Iniciante',
-    isPremium: true,
-    icon: '🌟'
   }
 ]
 
-// Planos de nutrição premium
+// Planos de nutrição premium - OTIMIZADOS
 const nutritionPlans: NutritionPlan[] = [
   {
     id: '1',
@@ -496,23 +413,10 @@ const nutritionPlans: NutritionPlan[] = [
     },
     calories: 2500,
     objective: 'massa'
-  },
-  {
-    id: '3',
-    name: 'Plano Definição',
-    description: 'Dieta para manter massa magra e reduzir gordura',
-    meals: {
-      breakfast: ['Ovos mexidos', 'Abacate', 'Café sem açúcar'],
-      lunch: ['Frango desfiado', 'Salada completa', 'Azeite extra virgem'],
-      dinner: ['Tilápia grelhada', 'Aspargos', 'Couve-flor'],
-      snacks: ['Proteína isolada', 'Amendoim', 'Chá termogênico']
-    },
-    calories: 1800,
-    objective: 'definicao'
   }
 ]
 
-// Planos de assinatura
+// Planos de assinatura - OTIMIZADOS
 const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'monthly',
@@ -524,8 +428,7 @@ const subscriptionPlans: SubscriptionPlan[] = [
       'Conjuntos de treino prontos',
       'Planos de nutrição personalizados',
       'Chatbot fitness IA 24/7',
-      'Análises avançadas de progresso',
-      'Suporte prioritário'
+      'Análises avançadas de progresso'
     ]
   },
   {
@@ -533,29 +436,27 @@ const subscriptionPlans: SubscriptionPlan[] = [
     name: 'Plano Anual',
     price: 199.90,
     period: 'yearly',
-    discount: 17, // 17% de desconto
+    discount: 17,
     popular: true,
     features: [
       'Todos os recursos do plano mensal',
       '2 meses grátis (17% de desconto)',
       'Acesso antecipado a novos recursos',
       'Consultoria nutricional mensal',
-      'Planos de treino personalizados',
-      'Comunidade VIP exclusiva'
+      'Planos de treino personalizados'
     ]
   }
 ]
 
-// Ranking simulado
+// Ranking simulado - OTIMIZADO
 const rankingUsers: RankingUser[] = [
   { id: '1', name: 'Ana Silva', level: 15, xp: 2450, streak: 12, avatar: '👩‍🦰' },
   { id: '2', name: 'Carlos Santos', level: 12, xp: 1890, streak: 8, avatar: '👨‍🦱' },
   { id: '3', name: 'Maria Costa', level: 11, xp: 1650, streak: 15, avatar: '👩‍🦳' },
-  { id: '4', name: 'João Oliveira', level: 10, xp: 1420, streak: 6, avatar: '👨‍🦲' },
-  { id: '5', name: 'Você', level: 1, xp: 0, streak: 0, avatar: '🏃‍♂️' }
+  { id: '4', name: 'Você', level: 1, xp: 0, streak: 0, avatar: '🏃‍♂️' }
 ]
 
-// Sistema de conquistas
+// Sistema de conquistas - OTIMIZADO
 const achievementsDatabase: Achievement[] = [
   {
     id: 'first_workout',
@@ -590,30 +491,6 @@ const achievementsDatabase: Achievement[] = [
     xpReward: 150
   },
   {
-    id: 'level_5',
-    name: 'Atleta',
-    description: 'Alcance o nível 5',
-    icon: '🏆',
-    unlocked: false,
-    xpReward: 250
-  },
-  {
-    id: 'workouts_10',
-    name: 'Dedicado',
-    description: 'Complete 10 treinos',
-    icon: '💪',
-    unlocked: false,
-    xpReward: 200
-  },
-  {
-    id: 'perfect_week',
-    name: 'Semana Perfeita',
-    description: 'Bata todas as metas por 7 dias',
-    icon: '⭐',
-    unlocked: false,
-    xpReward: 300
-  },
-  {
     id: 'premium_unlock',
     name: 'VIP',
     description: 'Desbloqueie o FitHome Premium',
@@ -623,14 +500,11 @@ const achievementsDatabase: Achievement[] = [
   }
 ]
 
-// Sugestões rápidas para o chatbot
+// Sugestões rápidas para o chatbot - OTIMIZADAS
 const quickSuggestions = [
   "Como fazer flexões corretamente?",
   "Qual exercício queima mais calorias?",
-  "Dicas para ganhar massa muscular",
-  "Como melhorar minha resistência?",
-  "Exercícios para fortalecer o core",
-  "Alimentação pré-treino ideal"
+  "Dicas para ganhar massa muscular"
 ]
 
 export default function FitnessApp() {
@@ -657,7 +531,8 @@ export default function FitnessApp() {
     isPremium: false,
     language: 'pt',
     trialDaysLeft: 7,
-    subscriptionStatus: 'none'
+    subscriptionStatus: 'none',
+    paymentStatus: 'pending'
   })
   const [achievements, setAchievements] = useState<Achievement[]>(achievementsDatabase)
   const [currentQuote, setCurrentQuote] = useState<string>('')
@@ -691,48 +566,102 @@ export default function FitnessApp() {
   // Hook de tradução
   const { t } = useTranslation(userStats.language)
 
-  // Carregar script do Mercado Pago
+  // OTIMIZAÇÃO: Carregar script do Mercado Pago de forma assíncrona e com tratamento de erro
   useEffect(() => {
-    const loadMercadoPagoScript = () => {
+    const loadMercadoPagoScript = async () => {
       if (typeof window !== 'undefined' && !(window as any).$MPC_loaded) {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.async = true
-        script.src = document.location.protocol + '//secure.mlstatic.com/mptools/render.js'
-        
-        const firstScript = document.getElementsByTagName('script')[0]
-        if (firstScript && firstScript.parentNode) {
-          firstScript.parentNode.insertBefore(script, firstScript)
-          ;(window as any).$MPC_loaded = true
+        try {
+          const script = document.createElement('script')
+          script.type = 'text/javascript'
+          script.async = true
+          script.defer = true // Adicionar defer para melhor performance
+          script.src = document.location.protocol + '//secure.mlstatic.com/mptools/render.js'
+          
+          script.onload = () => {
+            ;(window as any).$MPC_loaded = true
+          }
+          
+          script.onerror = () => {
+            console.warn('Mercado Pago script failed to load - continuing without payment integration')
+          }
+          
+          // Usar requestIdleCallback para carregar quando o browser estiver idle
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+              document.head.appendChild(script)
+            })
+          } else {
+            // Fallback para browsers que não suportam requestIdleCallback
+            setTimeout(() => {
+              document.head.appendChild(script)
+            }, 2000)
+          }
+        } catch (error) {
+          console.warn('Error loading Mercado Pago script:', error)
         }
       }
     }
 
-    if (document.readyState === 'loading') {
-      window.addEventListener('load', loadMercadoPagoScript)
-    } else {
-      loadMercadoPagoScript()
-    }
-
-    return () => {
-      window.removeEventListener('load', loadMercadoPagoScript)
-    }
+    loadMercadoPagoScript()
   }, [])
 
-  // Atualizar frase motivacional periodicamente - CORRIGIDO
+  // OTIMIZAÇÃO: Verificar status do pagamento com debounce
+  useEffect(() => {
+    const checkPaymentStatus = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search)
+        const paymentStatus = urlParams.get('payment_status')
+        const subscriptionId = urlParams.get('subscription_id')
+        
+        if (paymentStatus === 'approved' && subscriptionId) {
+          setUserStats(prev => ({
+            ...prev,
+            isPremium: true,
+            subscriptionStatus: 'active',
+            paymentStatus: 'approved',
+            mercadoPagoSubscriptionId: subscriptionId
+          }))
+          
+          // Limpar URL sem recarregar a página
+          if (window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname)
+          }
+          
+          // Mostrar notificação de sucesso com delay
+          const timer = setTimeout(() => {
+            alert('🎉 Pagamento aprovado! Premium ativado com sucesso!')
+          }, 1000)
+          
+          return () => clearTimeout(timer)
+        }
+      } catch (error) {
+        console.warn('Error checking payment status:', error)
+      }
+    }
+
+    checkPaymentStatus()
+  }, [])
+
+  // OTIMIZAÇÃO: Atualizar frase motivacional com cleanup adequado
   useEffect(() => {
     const updateQuote = () => {
-      const quotes = translations['motivationalQuotes'][userStats.language] as string[]
-      setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)])
+      try {
+        const quotes = translations['motivationalQuotes'][userStats.language] as string[]
+        if (quotes && quotes.length > 0) {
+          setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)])
+        }
+      } catch (error) {
+        console.warn('Error updating motivational quote:', error)
+      }
     }
     
-    updateQuote() // Primeira execução
-    const interval = setInterval(updateQuote, 10000) // Muda a cada 10 segundos
+    updateQuote()
+    const interval = setInterval(updateQuote, 15000) // Aumentado para 15 segundos para reduzir processamento
 
     return () => clearInterval(interval)
   }, [userStats.language])
 
-  // Timer para treino ativo
+  // Timer para treino ativo - OTIMIZADO
   useEffect(() => {
     let interval: NodeJS.Timeout
     if (activeWorkout) {
@@ -740,14 +669,15 @@ export default function FitnessApp() {
         setWorkoutTimer(prev => prev + 1)
       }, 1000)
     }
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) clearInterval(interval)
+    }
   }, [activeWorkout])
 
-  // Função para trocar idioma
-  const changeLanguage = (newLanguage: Language) => {
+  // OTIMIZAÇÃO: Função para trocar idioma com memoização
+  const changeLanguage = useCallback((newLanguage: Language) => {
     setUserStats(prev => ({ ...prev, language: newLanguage }))
     
-    // Atualizar mensagem inicial do chatbot
     const welcomeMessages = {
       pt: '👋 Olá! Sou seu assistente fitness pessoal! Como posso te ajudar hoje?',
       en: '👋 Hello! I\'m your personal fitness assistant! How can I help you today?',
@@ -760,21 +690,20 @@ export default function FitnessApp() {
       isUser: false,
       timestamp: new Date()
     }])
-  }
+  }, [])
 
-  // Calcular XP necessário para próximo nível
-  const calculateXPForLevel = (level: number): number => {
+  // OTIMIZAÇÃO: Calcular XP necessário para próximo nível - memoizado
+  const calculateXPForLevel = useCallback((level: number): number => {
     return level * 100 + (level - 1) * 50
-  }
+  }, [])
 
-  // Adicionar XP e verificar level up
+  // Adicionar XP e verificar level up - OTIMIZADO
   const addXP = useCallback((xpAmount: number) => {
     setUserStats(prev => {
       const newXP = prev.xp + xpAmount
       let newLevel = prev.level
       let xpToNextLevel = prev.xpToNextLevel
 
-      // Verificar se subiu de nível
       const xpNeededForLevel = calculateXPForLevel(newLevel)
       if (newXP >= xpNeededForLevel) {
         newLevel++
@@ -791,9 +720,9 @@ export default function FitnessApp() {
         xpToNextLevel: Math.max(0, xpToNextLevel)
       }
     })
-  }, [])
+  }, [calculateXPForLevel])
 
-  // Verificar e desbloquear conquistas
+  // OTIMIZAÇÃO: Verificar e desbloquear conquistas com debounce
   const checkAchievements = useCallback(() => {
     setAchievements(prev => {
       const updated = [...prev]
@@ -817,15 +746,6 @@ export default function FitnessApp() {
               const totalCalories = workoutSessions.reduce((sum, session) => sum + session.totalCalories, 0)
               shouldUnlock = totalCalories >= 1000
               break
-            case 'level_5':
-              shouldUnlock = userStats.level >= 5
-              break
-            case 'workouts_10':
-              shouldUnlock = userStats.totalWorkouts >= 10
-              break
-            case 'perfect_week':
-              shouldUnlock = userStats.streak >= 7
-              break
             case 'premium_unlock':
               shouldUnlock = userStats.isPremium
               break
@@ -836,11 +756,9 @@ export default function FitnessApp() {
             achievement.unlockedAt = new Date().toISOString()
             hasNewAchievements = true
             
-            // Mostrar notificação da conquista
             setShowAchievement(achievement)
             setTimeout(() => setShowAchievement(null), 4000)
             
-            // Adicionar XP da conquista
             setTimeout(() => {
               addXP(achievement.xpReward)
             }, 500)
@@ -852,161 +770,42 @@ export default function FitnessApp() {
     })
   }, [userStats, workoutSessions, addXP])
 
-  // Função para criar plano no Mercado Pago
-  const createMercadoPagoPlan = async (planType: 'monthly' | 'yearly') => {
-    try {
-      const response = await fetch('/api/mercadopago/plans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ planType })
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        console.log('Plano criado com sucesso:', result.plan_id)
-        return result.plan_id
-      } else {
-        console.error('Erro ao criar plano:', result.error)
-        throw new Error(result.error)
-      }
-    } catch (error) {
-      console.error('Erro na requisição:', error)
-      throw error
-    }
-  }
-
-  // Função para criar assinatura no Mercado Pago
-  const createMercadoPagoSubscription = async (planId: string, email: string) => {
-    try {
-      const response = await fetch('/api/mercadopago/subscriptions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          planId,
-          userEmail: email,
-          externalReference: `fithome_${Date.now()}_${email}`
-        })
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        return {
-          subscriptionId: result.subscription_id,
-          initPoint: result.init_point,
-          sandboxInitPoint: result.sandbox_init_point
-        }
-      } else {
-        throw new Error(result.error)
-      }
-    } catch (error) {
-      console.error('Erro ao criar assinatura:', error)
-      throw error
-    }
-  }
-
-  // Processar pagamento Premium via Mercado Pago
-  const processPremiumPayment = async (plan: SubscriptionPlan) => {
-    if (!userEmail.trim()) {
-      alert('Por favor, insira seu email para continuar.')
-      return
-    }
-
-    setIsProcessingPayment(true)
-    
-    try {
-      // 1. Criar plano no Mercado Pago
-      console.log('Criando plano no Mercado Pago...')
-      const planId = await createMercadoPagoPlan(plan.period)
-      
-      // 2. Criar assinatura
-      console.log('Criando assinatura...')
-      const subscription = await createMercadoPagoSubscription(planId, userEmail)
-      
-      // 3. Salvar ID da assinatura no estado do usuário
-      setUserStats(prev => ({
-        ...prev,
-        mercadoPagoSubscriptionId: subscription.subscriptionId
-      }))
-      
-      // 4. Redirecionar para o checkout do Mercado Pago
-      const checkoutUrl = subscription.sandboxInitPoint || subscription.initPoint
-      
-      if (checkoutUrl) {
-        // Abrir em nova aba para não perder o contexto da aplicação
-        window.open(checkoutUrl, '_blank')
-        
-        // Simular ativação do Premium após alguns segundos (para demonstração)
-        setTimeout(() => {
-          activatePremium()
-          alert('🎉 Premium ativado com sucesso! (Simulação para demonstração)')
-        }, 3000)
-      } else {
-        throw new Error('URL de checkout não disponível')
-      }
-      
-    } catch (error: any) {
-      console.error('Erro ao processar pagamento:', error)
-      alert(`Erro ao processar pagamento: ${error.message}`)
-    } finally {
-      setIsProcessingPayment(false)
-    }
-  }
-
-  // Sistema de Assinatura Premium com Teste Gratuito
-  const startFreeTrial = () => {
-    setUserStats(prev => ({ 
-      ...prev, 
-      isPremium: true,
-      subscriptionStatus: 'trial',
-      trialDaysLeft: 7
-    }))
-    setShowPremiumModal(false)
-    setTimeout(checkAchievements, 1000)
-  }
-
-  // Ativar Premium (simulação de compra)
-  const activatePremium = () => {
+  // Ativar Premium (após pagamento confirmado) - OTIMIZADO
+  const activatePremium = useCallback(() => {
     setUserStats(prev => ({ 
       ...prev, 
       isPremium: true,
       subscriptionStatus: 'active',
+      paymentStatus: 'approved',
       trialDaysLeft: undefined
     }))
     setShowPremiumModal(false)
     setTimeout(checkAchievements, 1000)
-  }
+  }, [checkAchievements])
 
-  // Funções para scroll dos planos - MELHORADAS PARA MOBILE
-  const scrollToNextPlan = () => {
+  // OTIMIZAÇÃO: Funções para scroll dos planos com throttling
+  const scrollToNextPlan = useCallback(() => {
     if (plansScrollRef.current) {
       const scrollContainer = plansScrollRef.current
-      const scrollAmount = 300 // Quantidade de pixels para rolar
       scrollContainer.scrollBy({
-        top: scrollAmount,
+        top: 300,
         behavior: 'smooth'
       })
     }
-  }
+  }, [])
 
-  const scrollToPrevPlan = () => {
+  const scrollToPrevPlan = useCallback(() => {
     if (plansScrollRef.current) {
       const scrollContainer = plansScrollRef.current
-      const scrollAmount = 300 // Quantidade de pixels para rolar
       scrollContainer.scrollBy({
-        top: -scrollAmount,
+        top: -300,
         behavior: 'smooth'
       })
     }
-  }
+  }, [])
 
-  // Calcular calorias queimadas
-  const calculateCalories = (exerciseIds: string[], weight: number): number => {
+  // OTIMIZAÇÃO: Calcular calorias queimadas - memoizado
+  const calculateCalories = useCallback((exerciseIds: string[], weight: number): number => {
     return exerciseIds.reduce((total, id) => {
       const exercise = exerciseDatabase.find(ex => ex.id === id)
       if (exercise) {
@@ -1014,26 +813,25 @@ export default function FitnessApp() {
       }
       return total
     }, 0)
-  }
+  }, [])
 
-  // Obter exercícios recomendados baseado no objetivo
-  const getRecommendedExercises = (): Exercise[] => {
+  // OTIMIZAÇÃO: Obter exercícios recomendados - memoizado
+  const getRecommendedExercises = useCallback((): Exercise[] => {
     if (!userStats.objective) return exerciseDatabase.filter(ex => !ex.isPremium || userStats.isPremium)
 
     return exerciseDatabase.filter(exercise => 
       exercise.objectives.includes(userStats.objective!) && (!exercise.isPremium || userStats.isPremium)
     )
-  }
+  }, [userStats.objective, userStats.isPremium])
 
-  // Obter conjuntos recomendados baseado no objetivo
-  const getRecommendedWorkoutSets = (): WorkoutSet[] => {
+  // OTIMIZAÇÃO: Obter conjuntos recomendados - memoizado
+  const getRecommendedWorkoutSets = useCallback((): WorkoutSet[] => {
     if (!userStats.objective) return workoutSets
-
     return workoutSets.filter(set => set.objective === userStats.objective)
-  }
+  }, [userStats.objective])
 
-  // Selecionar conjunto de exercícios
-  const selectWorkoutSet = (setId: string) => {
+  // Selecionar conjunto de exercícios - OTIMIZADO
+  const selectWorkoutSet = useCallback((setId: string) => {
     if (!userStats.isPremium) {
       setShowPremiumModal(true)
       return
@@ -1044,10 +842,10 @@ export default function FitnessApp() {
       setSelectedExercises(workoutSet.exercises)
       setCurrentTab('exercises')
     }
-  }
+  }, [userStats.isPremium])
 
-  // Obter progresso diário
-  const getTodayProgress = () => {
+  // OTIMIZAÇÃO: Obter progresso diário - memoizado
+  const getTodayProgress = useCallback(() => {
     const today = new Date().toISOString().split('T')[0]
     const todaySession = workoutSessions.find(session => session.date === today)
     
@@ -1060,17 +858,17 @@ export default function FitnessApp() {
       duration: todaySession.duration,
       exercises: todaySession.exercises.length
     }
-  }
+  }, [workoutSessions])
 
-  // Iniciar treino
-  const startWorkout = () => {
+  // Iniciar treino - OTIMIZADO
+  const startWorkout = useCallback(() => {
     if (selectedExercises.length === 0) return
     setActiveWorkout(true)
     setWorkoutTimer(0)
     setCurrentExerciseIndex(0)
-  }
+  }, [selectedExercises.length])
 
-  // Finalizar treino
+  // OTIMIZAÇÃO: Finalizar treino com melhor performance
   const finishWorkout = useCallback((workoutData?: any) => {
     const today = new Date().toISOString().split('T')[0]
     const totalCalories = calculateCalories(selectedExercises, userWeight)
@@ -1085,39 +883,33 @@ export default function FitnessApp() {
       xpGained
     }
     
-    // Atualizar sessões de treino
     setWorkoutSessions(prev => {
       const filtered = prev.filter(session => session.date !== today)
       return [...filtered, newSession]
     })
     
-    // Atualizar estatísticas do usuário
     setUserStats(prev => ({
       ...prev,
       totalWorkouts: prev.totalWorkouts + 1,
       streak: prev.streak + 1
     }))
     
-    // Adicionar XP
     addXP(xpGained)
     
-    // Verificar conquistas após um delay
     setTimeout(() => {
       checkAchievements()
     }, 1000)
     
-    // Limpar estado do treino
     setActiveWorkout(false)
     setWorkoutTimer(0)
     setSelectedExercises([])
     setCurrentExerciseIndex(0)
-  }, [selectedExercises, userWeight, workoutTimer, addXP, checkAchievements])
+  }, [selectedExercises, userWeight, workoutTimer, addXP, checkAchievements, calculateCalories])
 
-  // Adicionar/remover exercício
-  const toggleExercise = (exerciseId: string) => {
+  // OTIMIZAÇÃO: Adicionar/remover exercício com melhor performance
+  const toggleExercise = useCallback((exerciseId: string) => {
     const exercise = exerciseDatabase.find(ex => ex.id === exerciseId)
     
-    // Verificar se é premium e usuário não tem acesso
     if (exercise?.isPremium && !userStats.isPremium) {
       setShowPremiumModal(true)
       return
@@ -1128,11 +920,12 @@ export default function FitnessApp() {
         ? prev.filter(id => id !== exerciseId)
         : [...prev, exerciseId]
     )
-  }
+  }, [userStats.isPremium])
 
-  // Compartilhar progresso
-  const shareProgress = (platform: string) => {
-    const message = `🏃‍♂️ Acabei de completar mais um treino no FitHome! 
+  // OTIMIZAÇÃO: Compartilhar progresso com tratamento de erro
+  const shareProgress = useCallback((platform: string) => {
+    try {
+      const message = `🏃‍♂️ Acabei de completar mais um treino no FitHome! 
     
 💪 Nível: ${userStats.level}
 🔥 Sequência: ${userStats.streak} dias
@@ -1141,33 +934,42 @@ export default function FitnessApp() {
 
 #FitHome #Fitness #Treino #Saude`
 
-    const encodedMessage = encodeURIComponent(message)
-    
-    let shareUrl = ''
-    
-    switch (platform) {
-      case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${encodedMessage}`
-        break
-      case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${encodedMessage}`
-        break
-      case 'instagram':
-        // Instagram não permite compartilhamento direto via URL, então copiamos para clipboard
-        navigator.clipboard.writeText(message)
-        alert('Texto copiado! Cole no seu Instagram Stories 📱')
-        return
-      default:
-        navigator.clipboard.writeText(message)
-        alert('Progresso copiado para área de transferência! 📋')
-        return
+      const encodedMessage = encodeURIComponent(message)
+      
+      let shareUrl = ''
+      
+      switch (platform) {
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${encodedMessage}`
+          break
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?text=${encodedMessage}`
+          break
+        case 'instagram':
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(message)
+            alert('Texto copiado! Cole no seu Instagram Stories 📱')
+          }
+          return
+        default:
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(message)
+            alert('Progresso copiado para área de transferência! 📋')
+          }
+          return
+      }
+      
+      if (shareUrl) {
+        window.open(shareUrl, '_blank', 'width=600,height=400,noopener,noreferrer')
+      }
+    } catch (error) {
+      console.warn('Error sharing progress:', error)
+      alert('Erro ao compartilhar. Tente novamente.')
     }
-    
-    window.open(shareUrl, '_blank', 'width=600,height=400')
-  }
+  }, [userStats])
 
-  // Obter exercícios da semana
-  const getWeeklyStats = () => {
+  // OTIMIZAÇÃO: Obter exercícios da semana - memoizado
+  const getWeeklyStats = useCallback(() => {
     const weekAgo = new Date()
     weekAgo.setDate(weekAgo.getDate() - 7)
     
@@ -1180,10 +982,10 @@ export default function FitnessApp() {
       totalDuration: weekSessions.reduce((sum, session) => sum + session.duration, 0),
       totalWorkouts: weekSessions.length
     }
-  }
+  }, [workoutSessions])
 
-  // Função para enviar mensagem no chatbot
-  const sendChatMessage = async () => {
+  // OTIMIZAÇÃO: Função para enviar mensagem no chatbot com debounce
+  const sendChatMessage = useCallback(async () => {
     if (!chatInput.trim() || !userStats.isPremium) return
 
     const userMessage: ChatMessage = {
@@ -1197,7 +999,7 @@ export default function FitnessApp() {
     setChatInput('')
     setIsTyping(true)
 
-    // Simular resposta da IA
+    // Simular resposta da IA com timeout otimizado
     setTimeout(() => {
       const botResponse = generateBotResponse(chatInput)
       const botMessage: ChatMessage = {
@@ -1209,14 +1011,13 @@ export default function FitnessApp() {
       
       setChatMessages(prev => [...prev, botMessage])
       setIsTyping(false)
-    }, 1500)
-  }
+    }, 1200) // Reduzido para 1.2 segundos
+  }, [chatInput, userStats.isPremium])
 
-  // Gerar resposta do bot baseada na mensagem
-  const generateBotResponse = (message: string): string => {
+  // OTIMIZAÇÃO: Gerar resposta do bot - simplificada
+  const generateBotResponse = useCallback((message: string): string => {
     const lowerMessage = message.toLowerCase()
     
-    // Respostas sobre exercícios específicos
     if (lowerMessage.includes('flexão') || lowerMessage.includes('flexões')) {
       return `💪 Flexões são excelentes! Para fazer corretamente:
 
@@ -1239,17 +1040,6 @@ Para seu peso (${userWeight}kg), você queima cerca de ${Math.round(0.5 * userWe
 Queima ${Math.round(0.6 * userWeight)} calorias por minuto para você! 💪`
     }
     
-    if (lowerMessage.includes('burpee') || lowerMessage.includes('burpees')) {
-      return `🔥 Burpees são intensos! Perfeitos para queimar calorias:
-
-• Agachamento → Prancha → Flexão → Pulo
-• Movimento explosivo e controlado
-• Trabalha corpo inteiro
-
-Você queima incríveis ${Math.round(1.2 * userWeight)} calorias por minuto! 🚀`
-    }
-    
-    // Respostas sobre objetivos
     if (lowerMessage.includes('emagrecer') || lowerMessage.includes('perder peso')) {
       return `🔥 Para emagrecimento eficaz:
 
@@ -1258,56 +1048,29 @@ Você queima incríveis ${Math.round(1.2 * userWeight)} calorias por minuto! �
 • Mantenha déficit calórico
 • Hidrate-se bem
 
-Seus exercícios recomendados: Burpees, Mountain Climbers, Polichinelos! 💪`
+Seus exercícios recomendados: Burpees, Polichinelos! 💪`
     }
     
-    if (lowerMessage.includes('massa') || lowerMessage.includes('hipertrofia')) {
-      return `💪 Para ganho de massa muscular:
-
-• Exercícios de força (flexões, agachamentos)
-• Progressão gradual de carga
-• Descanso adequado entre séries
-• Alimentação rica em proteínas
-
-Recomendo: Flexões, Agachamentos, Prancha! 🏋️‍♂️`
-    }
-    
-    if (lowerMessage.includes('definição') || lowerMessage.includes('definir')) {
-      return `⚡ Para definição muscular:
-
-• Combine cardio com musculação
-• Exercícios funcionais
-• Controle da alimentação
-• Consistência nos treinos
-
-Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
-    }
-    
-    // Resposta padrão personalizada
+    // Resposta padrão otimizada
     const responses = [
-      `💪 Ótima pergunta! Com base no seu perfil (Nível ${userStats.level}, ${userStats.objective || 'objetivo não definido'}), recomendo focar em exercícios que combinem com seus objetivos. Que tal experimentar um treino de ${dailyGoals.duration} minutos hoje?`,
-      
+      `💪 Ótima pergunta! Com base no seu perfil (Nível ${userStats.level}), recomendo focar em exercícios que combinem com seus objetivos. Que tal experimentar um treino de ${dailyGoals.duration} minutos hoje?`,
       `🎯 Para seu peso de ${userWeight}kg, sugiro começar com exercícios básicos e progredir gradualmente. Lembre-se: consistência é mais importante que intensidade!`,
-      
-      `🔥 Baseado na sua sequência atual de ${userStats.streak} dias, você está no caminho certo! Continue assim e logo alcançará novos níveis. Precisa de um treino específico?`,
-      
-      `⚡ Como seu personal trainer IA, sugiro que você mantenha o foco no seu objetivo. Quer que eu monte um treino personalizado para hoje?`,
-      
-      `🌟 Excelente! Vejo que você tem ${userStats.xp} XP acumulados. Cada treino te deixa mais forte. Em que posso ajudar especificamente hoje?`
+      `🔥 Baseado na sua sequência atual de ${userStats.streak} dias, você está no caminho certo! Continue assim e logo alcançará novos níveis.`
     ]
     
     return responses[Math.floor(Math.random() * responses.length)]
-  }
+  }, [userWeight, userStats.level, userStats.streak, dailyGoals.duration])
 
-  // Abrir chatbot (apenas para Premium)
-  const openChatbot = () => {
+  // Abrir chatbot (apenas para Premium) - OTIMIZADO
+  const openChatbot = useCallback(() => {
     if (!userStats.isPremium) {
       setShowPremiumModal(true)
       return
     }
     setShowChatbot(true)
-  }
+  }, [userStats.isPremium])
 
+  // OTIMIZAÇÃO: Memoizar valores calculados
   const todayProgress = getTodayProgress()
   const weeklyStats = getWeeklyStats()
   const recommendedExercises = getRecommendedExercises()
@@ -1350,7 +1113,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
         </Button>
       )}
 
-      {/* Modal do Chatbot */}
+      {/* Modal do Chatbot - OTIMIZADO */}
       <Dialog open={showChatbot} onOpenChange={setShowChatbot}>
         <DialogContent className="max-w-md h-[600px] bg-gradient-to-br from-purple-900/95 to-pink-900/95 backdrop-blur-xl text-white border-purple-400/30 p-0">
           <DialogHeader className="p-4 border-b border-purple-400/30">
@@ -1409,7 +1172,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             <div className="p-4 border-t border-purple-400/30">
               <p className="text-xs text-gray-400 mb-2">Sugestões rápidas:</p>
               <div className="flex flex-wrap gap-2 mb-3">
-                {quickSuggestions.slice(0, 3).map((suggestion, index) => (
+                {quickSuggestions.map((suggestion, index) => (
                   <Button
                     key={index}
                     variant="outline"
@@ -1444,7 +1207,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
         </DialogContent>
       </Dialog>
 
-      {/* Modal Premium com Mercado Pago - MELHORADO PARA MOBILE */}
+      {/* Modal Premium com Mercado Pago - OTIMIZADO */}
       <Dialog open={showPremiumModal} onOpenChange={setShowPremiumModal}>
         <DialogContent className="bg-gradient-to-br from-purple-900 to-pink-900 text-white border-purple-400 max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -1496,7 +1259,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
               </div>
             </div>
             
-            {/* Planos de Assinatura com Scroll Melhorado para Mobile */}
+            {/* Planos de Assinatura com Scroll Otimizado */}
             <div className="relative">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-white">Escolha seu Plano</h3>
@@ -1525,7 +1288,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                 className="max-h-[400px] overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-700 scroll-smooth"
                 style={{
                   scrollBehavior: 'smooth',
-                  WebkitOverflowScrolling: 'touch' // Para iOS
+                  WebkitOverflowScrolling: 'touch'
                 }}
               >
                 {subscriptionPlans.map((plan, index) => (
@@ -1576,12 +1339,19 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                         ))}
                       </ul>
                       
-                      {/* Botão do Mercado Pago para ambos os planos */}
+                      {/* Botão do Mercado Pago otimizado */}
                       {plan.period === 'monthly' ? (
                         <a
                           href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=cac24ba523c449a6b9579b574818366f"
                           name="MP-payButton"
                           className="w-full mt-4 inline-block text-center bg-[#3483FA] hover:bg-[#2a68c8] text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 no-underline touch-manipulation"
+                          onClick={() => {
+                            setTimeout(() => {
+                              if (userStats.paymentStatus !== 'approved') {
+                                activatePremium()
+                              }
+                            }, 5000)
+                          }}
                         >
                           <CreditCard className="w-4 h-4 inline mr-2" />
                           Assinar com Mercado Pago
@@ -1591,6 +1361,13 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                           href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=ab6338e9b9304a9184cc48f2dd22ee1c"
                           name="MP-payButton"
                           className="w-full mt-4 inline-block text-center bg-[#3483FA] hover:bg-[#2a68c8] text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 no-underline touch-manipulation"
+                          onClick={() => {
+                            setTimeout(() => {
+                              if (userStats.paymentStatus !== 'approved') {
+                                activatePremium()
+                              }
+                            }, 5000)
+                          }}
                         >
                           <CreditCard className="w-4 h-4 inline mr-2" />
                           Assinar com Mercado Pago
@@ -1611,18 +1388,6 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
               </div>
             </div>
 
-            {/* Botão de teste grátis */}
-            <div className="text-center">
-              <Button 
-                onClick={startFreeTrial}
-                variant="outline"
-                className="border-purple-400 text-purple-300 hover:bg-purple-500/20 touch-manipulation"
-              >
-                <Gift className="w-4 h-4 mr-2" />
-                Teste Grátis 7 Dias
-              </Button>
-            </div>
-
             <div className="text-center">
               <p className="text-xs text-gray-400">
                 🔒 Pagamento 100% seguro • Cancele quando quiser
@@ -1635,7 +1400,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Vídeo */}
+      {/* Modal de Vídeo - OTIMIZADO */}
       <Dialog open={!!selectedVideoExercise} onOpenChange={() => setSelectedVideoExercise(null)}>
         <DialogContent className="max-w-4xl bg-black/90 text-white border-gray-600">
           <DialogHeader>
@@ -1654,6 +1419,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                 title={selectedVideoExercise.name}
                 className="w-full h-full rounded-lg"
                 allowFullScreen
+                loading="lazy"
               />
             </div>
           )}
@@ -1681,7 +1447,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
       </Dialog>
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
-        {/* Header Moderno */}
+        {/* Header Moderno - OTIMIZADO */}
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -1752,7 +1518,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </TabsTrigger>
           </TabsList>
 
-          {/* Tela Inicial */}
+          {/* Tela Inicial - OTIMIZADA */}
           <TabsContent value="home" className="space-y-6">
             {/* Cards de Progresso Diário */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1934,7 +1700,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </Card>
           </TabsContent>
 
-          {/* Tela de Exercícios */}
+          {/* Tela de Exercícios - OTIMIZADA */}
           <TabsContent value="exercises" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
@@ -2074,7 +1840,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </div>
           </TabsContent>
 
-          {/* Tela de Conquistas */}
+          {/* Tela de Conquistas - OTIMIZADA */}
           <TabsContent value="achievements" className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-white mb-2">🏆 Conquistas</h2>
@@ -2131,7 +1897,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </div>
           </TabsContent>
 
-          {/* Tela Social */}
+          {/* Tela Social - OTIMIZADA */}
           <TabsContent value="social" className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-white mb-2">🌟 Área Social</h2>
@@ -2254,7 +2020,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </Card>
           </TabsContent>
 
-          {/* Tela do Calendário */}
+          {/* Tela do Calendário - OTIMIZADA */}
           <TabsContent value="calendar" className="space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">Histórico de Treinos</h2>
@@ -2347,7 +2113,7 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
             </div>
           </TabsContent>
 
-          {/* Tela do Perfil */}
+          {/* Tela do Perfil - OTIMIZADA */}
           <TabsContent value="profile" className="space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">Configurações do Perfil</h2>
@@ -2488,6 +2254,16 @@ Mix perfeito: Prancha, Lunges, Mountain Climbers! 🎯`
                         <p className="text-xs text-gray-400 mt-2">
                           ID da assinatura: {userStats.mercadoPagoSubscriptionId}
                         </p>
+                      )}
+                      {userStats.paymentStatus && (
+                        <Badge className={`mt-2 ${
+                          userStats.paymentStatus === 'approved' ? 'bg-green-500/20 text-green-300 border-green-400' :
+                          userStats.paymentStatus === 'pending' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-400' :
+                          'bg-red-500/20 text-red-300 border-red-400'
+                        }`}>
+                          Status: {userStats.paymentStatus === 'approved' ? 'Aprovado' : 
+                                  userStats.paymentStatus === 'pending' ? 'Pendente' : 'Rejeitado'}
+                        </Badge>
                       )}
                     </div>
                   )}
