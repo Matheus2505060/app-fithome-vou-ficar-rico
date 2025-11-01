@@ -8,7 +8,8 @@ import {
   Award, Crown, Medal, TrendingUp, Sparkles, Heart, Dumbbell, Video, 
   Users, Share2, BarChart3, Lock, Unlock, Gift, ChefHat, Facebook, 
   Twitter, Instagram, Youtube, MessageCircle, Send, Bot, X, Package, 
-  Bookmark, Globe, CreditCard, DollarSign, Shield, ChevronUp, ChevronDown 
+  Bookmark, Globe, CreditCard, DollarSign, Shield, ChevronUp, ChevronDown,
+  LogIn, UserPlus, Mail, Eye, EyeOff
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -96,6 +97,17 @@ const translations: Translations = {
   nutritionPlansDesc: { pt: 'Dietas personalizadas para seus objetivos', en: 'Personalized diets for your goals', es: 'Dietas personalizadas para tus objetivos' },
   fitnessBot: { pt: 'Chatbot Fitness IA', en: 'AI Fitness Chatbot', es: 'Chatbot Fitness IA' },
   fitnessBotDesc: { pt: 'Assistente pessoal 24/7 para tirar dúvidas sobre treinos e nutrição', en: '24/7 personal assistant for workout and nutrition questions', es: 'Asistente personal 24/7 para dudas sobre entrenamientos y nutrición' },
+  
+  // Autenticação
+  login: { pt: 'Entrar', en: 'Login', es: 'Iniciar Sesión' },
+  register: { pt: 'Cadastrar', en: 'Register', es: 'Registrarse' },
+  email: { pt: 'E-mail', en: 'Email', es: 'Correo' },
+  password: { pt: 'Senha', en: 'Password', es: 'Contraseña' },
+  confirmPassword: { pt: 'Confirmar Senha', en: 'Confirm Password', es: 'Confirmar Contraseña' },
+  forgotPassword: { pt: 'Esqueci minha senha', en: 'Forgot password', es: 'Olvidé mi contraseña' },
+  createAccount: { pt: 'Criar conta', en: 'Create account', es: 'Crear cuenta' },
+  alreadyHaveAccount: { pt: 'Já tem uma conta?', en: 'Already have an account?', es: '¿Ya tienes una cuenta?' },
+  dontHaveAccount: { pt: 'Não tem uma conta?', en: 'Don\'t have an account?', es: '¿No tienes una cuenta?' },
   
   // Frases motivacionais - OTIMIZADO: Reduzido para 5 frases por idioma
   motivationalQuotes: {
@@ -247,8 +259,19 @@ interface SubscriptionPlan {
   popular?: boolean
 }
 
-// Base de exercícios - OTIMIZADA: Reduzida para exercícios essenciais
+// Interface para usuário autenticado
+interface User {
+  id: string
+  email: string
+  name?: string
+  isPremium: boolean
+  subscriptionStatus: 'trial' | 'active' | 'expired' | 'none'
+  createdAt: string
+}
+
+// Base de exercícios - EXPANDIDA com mais exercícios
 const exerciseDatabase: Exercise[] = [
+  // Exercícios básicos existentes
   {
     id: '1',
     name: 'Flexões',
@@ -327,7 +350,231 @@ const exerciseDatabase: Exercise[] = [
     objectives: ['emagrecimento', 'definicao'],
     videoUrl: 'https://www.youtube.com/embed/c4DAnQ6DtF8'
   },
-  // Exercícios Premium - REDUZIDOS
+  
+  // NOVOS EXERCÍCIOS ADICIONADOS
+  {
+    id: '9',
+    name: 'Flexões Diamante',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 0.6,
+    sets: 3,
+    reps: 12,
+    description: 'Variação de flexão que foca mais nos tríceps',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/J0DnG1_S92I'
+  },
+  {
+    id: '10',
+    name: 'Afundo',
+    category: 'Pernas',
+    duration: 1,
+    caloriesPerKg: 0.7,
+    sets: 3,
+    reps: 16,
+    description: 'Exercício unilateral para pernas e glúteos',
+    difficulty: 'Médio',
+    objectives: ['massa', 'definicao', 'emagrecimento'],
+    videoUrl: 'https://www.youtube.com/embed/QOVaHwm-Q6U'
+  },
+  {
+    id: '11',
+    name: 'Mountain Climbers',
+    category: 'Cardio',
+    duration: 1,
+    caloriesPerKg: 1.0,
+    sets: 3,
+    reps: 20,
+    description: 'Exercício cardio que trabalha core e coordenação',
+    difficulty: 'Médio',
+    objectives: ['emagrecimento', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/wQq3ybaLp1E'
+  },
+  {
+    id: '12',
+    name: 'Prancha Lateral',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.4,
+    sets: 3,
+    reps: 45,
+    description: 'Fortalece os músculos laterais do core',
+    difficulty: 'Médio',
+    objectives: ['definicao', 'massa'],
+    videoUrl: 'https://www.youtube.com/embed/K2VljzCC16g'
+  },
+  {
+    id: '13',
+    name: 'Flexões Inclinadas',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 0.4,
+    sets: 3,
+    reps: 20,
+    description: 'Versão mais fácil das flexões tradicionais',
+    difficulty: 'Fácil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/4dF1DOWzf20'
+  },
+  {
+    id: '14',
+    name: 'Agachamento Sumo',
+    category: 'Pernas',
+    duration: 1,
+    caloriesPerKg: 0.6,
+    sets: 3,
+    reps: 18,
+    description: 'Variação do agachamento que trabalha mais o glúteo',
+    difficulty: 'Fácil',
+    objectives: ['massa', 'definicao', 'emagrecimento'],
+    videoUrl: 'https://www.youtube.com/embed/pOgop4_G2UY'
+  },
+  {
+    id: '15',
+    name: 'Elevação de Panturrilha',
+    category: 'Pernas',
+    duration: 1,
+    caloriesPerKg: 0.3,
+    sets: 3,
+    reps: 25,
+    description: 'Fortalece os músculos da panturrilha',
+    difficulty: 'Fácil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/gwLzBJYoWlI'
+  },
+  {
+    id: '16',
+    name: 'Prancha com Elevação de Perna',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.5,
+    sets: 3,
+    reps: 20,
+    description: 'Prancha dinâmica que trabalha core e glúteos',
+    difficulty: 'Médio',
+    objectives: ['definicao', 'massa'],
+    videoUrl: 'https://www.youtube.com/embed/sw8dDx8rKlE'
+  },
+  {
+    id: '17',
+    name: 'Jumping Jacks Cruzados',
+    category: 'Cardio',
+    duration: 1,
+    caloriesPerKg: 0.9,
+    sets: 3,
+    reps: 25,
+    description: 'Variação dos polichinelos com movimento cruzado',
+    difficulty: 'Médio',
+    objectives: ['emagrecimento', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/dmYwZH_BNd0'
+  },
+  {
+    id: '18',
+    name: 'Flexões com Palmas',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 0.7,
+    sets: 3,
+    reps: 8,
+    description: 'Flexão explosiva que desenvolve potência',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/qABbVXpL6LI'
+  },
+  {
+    id: '19',
+    name: 'Agachamento com Salto',
+    category: 'Pernas',
+    duration: 1,
+    caloriesPerKg: 0.8,
+    sets: 3,
+    reps: 15,
+    description: 'Agachamento pliométrico para potência e cardio',
+    difficulty: 'Médio',
+    objectives: ['emagrecimento', 'definicao', 'massa'],
+    videoUrl: 'https://www.youtube.com/embed/A-cFYWvaHr0'
+  },
+  {
+    id: '20',
+    name: 'Prancha Superman',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.5,
+    sets: 3,
+    reps: 15,
+    description: 'Exercício que trabalha core e músculos das costas',
+    difficulty: 'Médio',
+    objectives: ['definicao', 'massa'],
+    videoUrl: 'https://www.youtube.com/embed/z6PJMT2y8GQ'
+  },
+  {
+    id: '21',
+    name: 'High Knees',
+    category: 'Cardio',
+    duration: 1,
+    caloriesPerKg: 0.9,
+    sets: 3,
+    reps: 30,
+    description: 'Corrida estacionária com joelhos elevados',
+    difficulty: 'Fácil',
+    objectives: ['emagrecimento', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/8opcQdC-V-U'
+  },
+  {
+    id: '22',
+    name: 'Flexões Declinadas',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 0.6,
+    sets: 3,
+    reps: 12,
+    description: 'Flexões com pés elevados, mais desafiadoras',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/SKPab2YC8BE'
+  },
+  {
+    id: '23',
+    name: 'Agachamento Búlgaro',
+    category: 'Pernas',
+    duration: 1,
+    caloriesPerKg: 0.7,
+    sets: 3,
+    reps: 12,
+    description: 'Agachamento unilateral com pé traseiro elevado',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/2C-uNgKwPLE'
+  },
+  {
+    id: '24',
+    name: 'Bear Crawl',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.8,
+    sets: 3,
+    reps: 20,
+    description: 'Movimento animal que trabalha corpo inteiro',
+    difficulty: 'Médio',
+    objectives: ['definicao', 'emagrecimento'],
+    videoUrl: 'https://www.youtube.com/embed/Azrg8Kt2kWE'
+  },
+  {
+    id: '25',
+    name: 'Skaters',
+    category: 'Cardio',
+    duration: 1,
+    caloriesPerKg: 0.8,
+    sets: 3,
+    reps: 20,
+    description: 'Movimento lateral que imita patinação',
+    difficulty: 'Médio',
+    objectives: ['emagrecimento', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/uCb7RlJ-yjk'
+  },
+  
+  // Exercícios Premium existentes
   {
     id: '7',
     name: 'Pistol Squats',
@@ -354,6 +601,78 @@ const exerciseDatabase: Exercise[] = [
     difficulty: 'Difícil',
     objectives: ['definicao'],
     videoUrl: 'https://www.youtube.com/embed/mjnneqUHKgE',
+    isPremium: true
+  },
+  
+  // NOVOS EXERCÍCIOS PREMIUM
+  {
+    id: '26',
+    name: 'Handstand Push-ups',
+    category: 'Ombros',
+    duration: 1,
+    caloriesPerKg: 0.9,
+    sets: 3,
+    reps: 5,
+    description: 'Flexão de braço na parada de mão',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/tQhrk6WMcKw',
+    isPremium: true
+  },
+  {
+    id: '27',
+    name: 'Muscle-ups',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 1.0,
+    sets: 3,
+    reps: 3,
+    description: 'Movimento avançado que combina barra e paralelas',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/tiagrh5iFWs',
+    isPremium: true
+  },
+  {
+    id: '28',
+    name: 'Human Flag',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.8,
+    sets: 3,
+    reps: 10,
+    description: 'Exercício isométrico extremamente avançado',
+    difficulty: 'Difícil',
+    objectives: ['definicao'],
+    videoUrl: 'https://www.youtube.com/embed/UKh6JfQS5f4',
+    isPremium: true
+  },
+  {
+    id: '29',
+    name: 'Archer Push-ups',
+    category: 'Peito',
+    duration: 1,
+    caloriesPerKg: 0.7,
+    sets: 3,
+    reps: 8,
+    description: 'Flexão unilateral avançada',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/y-wV4Venusw',
+    isPremium: true
+  },
+  {
+    id: '30',
+    name: 'Planche Push-ups',
+    category: 'Core',
+    duration: 1,
+    caloriesPerKg: 0.9,
+    sets: 3,
+    reps: 5,
+    description: 'Flexão em posição de prancha avançada',
+    difficulty: 'Difícil',
+    objectives: ['massa', 'definicao'],
+    videoUrl: 'https://www.youtube.com/embed/Hml31hm-Zkg',
     isPremium: true
   }
 ]
@@ -508,6 +827,18 @@ const quickSuggestions = [
 ]
 
 export default function FitnessApp() {
+  // Estados de autenticação
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [authEmail, setAuthEmail] = useState<string>('')
+  const [authPassword, setAuthPassword] = useState<string>('')
+  const [authConfirmPassword, setAuthConfirmPassword] = useState<string>('')
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [authError, setAuthError] = useState<string>('')
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false)
+
   const [userWeight, setUserWeight] = useState<number>(70)
   const [currentTab, setCurrentTab] = useState('home')
   const [workoutSessions, setWorkoutSessions] = useState<WorkoutSession[]>([])
@@ -565,6 +896,117 @@ export default function FitnessApp() {
 
   // Hook de tradução
   const { t } = useTranslation(userStats.language)
+
+  // Funções de autenticação
+  const handleLogin = async () => {
+    setIsAuthLoading(true)
+    setAuthError('')
+    
+    try {
+      // Simular autenticação
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      if (authEmail && authPassword) {
+        const user: User = {
+          id: '1',
+          email: authEmail,
+          name: authEmail.split('@')[0],
+          isPremium: false,
+          subscriptionStatus: 'none',
+          createdAt: new Date().toISOString()
+        }
+        
+        setCurrentUser(user)
+        setIsAuthenticated(true)
+        setShowAuthModal(false)
+        setAuthEmail('')
+        setAuthPassword('')
+        
+        // Atualizar stats do usuário
+        setUserStats(prev => ({
+          ...prev,
+          isPremium: user.isPremium,
+          subscriptionStatus: user.subscriptionStatus
+        }))
+      } else {
+        setAuthError('Por favor, preencha todos os campos')
+      }
+    } catch (error) {
+      setAuthError('Erro ao fazer login. Tente novamente.')
+    } finally {
+      setIsAuthLoading(false)
+    }
+  }
+
+  const handleRegister = async () => {
+    setIsAuthLoading(true)
+    setAuthError('')
+    
+    try {
+      if (!authEmail || !authPassword || !authConfirmPassword) {
+        setAuthError('Por favor, preencha todos os campos')
+        return
+      }
+      
+      if (authPassword !== authConfirmPassword) {
+        setAuthError('As senhas não coincidem')
+        return
+      }
+      
+      if (authPassword.length < 6) {
+        setAuthError('A senha deve ter pelo menos 6 caracteres')
+        return
+      }
+      
+      // Simular registro
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      const user: User = {
+        id: '1',
+        email: authEmail,
+        name: authEmail.split('@')[0],
+        isPremium: false,
+        subscriptionStatus: 'trial', // Novo usuário ganha 7 dias grátis
+        createdAt: new Date().toISOString()
+      }
+      
+      setCurrentUser(user)
+      setIsAuthenticated(true)
+      setShowAuthModal(false)
+      setAuthEmail('')
+      setAuthPassword('')
+      setAuthConfirmPassword('')
+      
+      // Atualizar stats do usuário com trial
+      setUserStats(prev => ({
+        ...prev,
+        isPremium: true, // Trial conta como premium
+        subscriptionStatus: 'trial',
+        trialDaysLeft: 7
+      }))
+      
+      // Mostrar mensagem de boas-vindas
+      setTimeout(() => {
+        alert('🎉 Conta criada com sucesso! Você ganhou 7 dias grátis de Premium!')
+      }, 1000)
+      
+    } catch (error) {
+      setAuthError('Erro ao criar conta. Tente novamente.')
+    } finally {
+      setIsAuthLoading(false)
+    }
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setCurrentUser(null)
+    setUserStats(prev => ({
+      ...prev,
+      isPremium: false,
+      subscriptionStatus: 'none'
+    }))
+    setCurrentTab('home')
+  }
 
   // OTIMIZAÇÃO: Carregar script do Mercado Pago de forma assíncrona e com tratamento de erro
   useEffect(() => {
@@ -1076,6 +1518,157 @@ Seus exercícios recomendados: Burpees, Polichinelos! 💪`
   const recommendedExercises = getRecommendedExercises()
   const recommendedWorkoutSets = getRecommendedWorkoutSets()
 
+  // Se não estiver autenticado, mostrar tela de login
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-black/30 backdrop-blur-sm border-gray-600 text-white">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                FitHome
+              </h1>
+            </div>
+            <CardTitle className="text-2xl">
+              {authMode === 'login' ? t('login') : t('register')}
+            </CardTitle>
+            <CardDescription className="text-gray-300">
+              {authMode === 'login' 
+                ? 'Entre na sua conta para continuar' 
+                : 'Crie sua conta e ganhe 7 dias grátis de Premium!'
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {authError && (
+              <div className="p-3 bg-red-500/20 border border-red-400/50 rounded-lg text-red-300 text-sm">
+                {authError}
+              </div>
+            )}
+            
+            <div>
+              <Label htmlFor="email" className="text-gray-300">{t('email')}</Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  className="pl-10 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  placeholder="seu@email.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="password" className="text-gray-300">{t('password')}</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="pl-10 pr-10 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  placeholder="••••••••"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+
+            {authMode === 'register' && (
+              <div>
+                <Label htmlFor="confirmPassword" className="text-gray-300">{t('confirmPassword')}</Label>
+                <div className="relative mt-1">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? 'text' : 'password'}
+                    value={authConfirmPassword}
+                    onChange={(e) => setAuthConfirmPassword(e.target.value)}
+                    className="pl-10 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+            )}
+
+            <Button
+              onClick={authMode === 'login' ? handleLogin : handleRegister}
+              disabled={isAuthLoading}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3"
+            >
+              {isAuthLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  {authMode === 'login' ? 'Entrando...' : 'Criando conta...'}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  {authMode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
+                  {authMode === 'login' ? t('login') : t('createAccount')}
+                </div>
+              )}
+            </Button>
+
+            {authMode === 'register' && (
+              <div className="p-3 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-400/30">
+                <div className="flex items-center gap-2 text-yellow-300 font-semibold mb-1">
+                  <Gift className="w-4 h-4" />
+                  🎁 7 dias grátis de Premium!
+                </div>
+                <p className="text-xs text-gray-300">
+                  Ao criar sua conta, você ganha acesso completo por 7 dias
+                </p>
+              </div>
+            )}
+
+            <div className="text-center">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setAuthMode(authMode === 'login' ? 'register' : 'login')
+                  setAuthError('')
+                  setAuthEmail('')
+                  setAuthPassword('')
+                  setAuthConfirmPassword('')
+                }}
+                className="text-gray-300 hover:text-white"
+              >
+                {authMode === 'login' ? (
+                  <>
+                    {t('dontHaveAccount')} <span className="text-purple-400 ml-1">{t('register')}</span>
+                  </>
+                ) : (
+                  <>
+                    {t('alreadyHaveAccount')} <span className="text-purple-400 ml-1">{t('login')}</span>
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {authMode === 'login' && (
+              <div className="text-center">
+                <Button variant="ghost" className="text-sm text-gray-400 hover:text-white">
+                  {t('forgotPassword')}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Notificações */}
@@ -1460,6 +2053,31 @@ Seus exercícios recomendados: Burpees, Polichinelos! 💪`
           <p className="text-xl text-gray-300 mb-4">
             {t('appSubtitle')}
           </p>
+          
+          {/* Barra de usuário */}
+          <div className="flex items-center justify-between mb-4 p-4 bg-black/30 backdrop-blur-sm rounded-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-white font-semibold">
+                  Olá, {currentUser?.name || 'Usuário'}!
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {currentUser?.email}
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+            >
+              Sair
+            </Button>
+          </div>
           
           {/* Frase Motivacional */}
           <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-300/30 rounded-2xl p-4 mb-6">
