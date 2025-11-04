@@ -1,106 +1,169 @@
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+import { supabase } from './supabase'
 
 export interface User {
   id: string
   email: string
   name: string
   created_at: string
+  is_premium?: boolean
+  subscription_status?: 'trial' | 'active' | 'expired' | 'none'
 }
 
 export interface AuthResponse {
   success: boolean
   user?: User
-  token?: string
   error?: string
 }
 
-// Simular banco de dados local (em produção, usar Supabase)
-let users: Array<User & { password_hash: string }> = []
-
 export async function registerUser(email: string, name: string, password: string): Promise<AuthResponse> {
   try {
-    // Verificar se usuário já existe
-    const existingUser = users.find(u => u.email === email)
-    if (existingUser) {
-      return { success: false, error: 'Email já está em uso' }
-    }
-
-    // Hash da senha
-    const password_hash = await bcrypt.hash(password, 10)
-
-    // Criar usuário
-    const user = {
-      id: crypto.randomUUID(),
+    // Registrar usuário no Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
-      name,
-      password_hash,
-      created_at: new Date().toISOString()
+      password,
+      options: {
+        data: {
+          name: name
+        }
+      }
+    })
+
+    if (authError) {
+      return { success: false, error: authError.message }
     }
 
-    users.push(user)
+    if (!authData.user) {
+      return { success: false, error: 'Erro ao criar usuário' }
+    }
 
-    // Gerar token JWT
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' })
+    // Criar perfil do usuário na tabela profiles
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: authData.user.id,
+        email: authData.user.email,
+        name: name,
+        is_premium: false,
+        subscription_status: 'trial', // 7 dias grátis para novos usuários
+        trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      })
 
-    // Retornar usuário sem senha
-    const { password_hash: _, ...userWithoutPassword } = user
-    
+    if (profileError) {
+      console.error('Erro ao criar perfil:', profileError)
+      // Não falhar o registro se o perfil não for criado
+    }
+
+    const user: User = {
+      id: authData.user.id,
+      email: authData.user.email!,
+      name: name,
+      created_at: authData.user.created_at,
+      is_premium: true, // Trial conta como premium
+      subscription_status: 'trial'
+    }
+
     return {
       success: true,
-      user: userWithoutPassword,
-      token
+      user
     }
-  } catch (error) {
-    return { success: false, error: 'Erro interno do servidor' }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Erro interno do servidor' }
   }
 }
 
 export async function loginUser(email: string, password: string): Promise<AuthResponse> {
   try {
-    // Buscar usuário
-    const user = users.find(u => u.email === email)
-    if (!user) {
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    if (authError) {
       return { success: false, error: 'Email ou senha inválidos' }
     }
 
-    // Verificar senha
-    const isValidPassword = await bcrypt.compare(password, user.password_hash)
-    if (!isValidPassword) {
-      return { success: false, error: 'Email ou senha inválidos' }
+    if (!authData.user) {
+      return { success: false, error: 'Erro ao fazer login' }
     }
 
-    // Gerar token JWT
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' })
+    // Buscar dados do perfil
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authData.user.id)
+      .single()
 
-    // Retornar usuário sem senha
-    const { password_hash: _, ...userWithoutPassword } = user
+    const user: User = {
+      id: authData.user.id,
+      email: authData.user.email!,
+      name: profile?.name || authData.user.user_metadata?.name || 'Usuário',
+      created_at: authData.user.created_at,
+      is_premium: profile?.is_premium || false,
+      subscription_status: profile?.subscription_status || 'none'
+    }
 
     return {
       success: true,
-      user: userWithoutPassword,
-      token
+      user
     }
-  } catch (error) {
-    return { success: false, error: 'Erro interno do servidor' }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Erro interno do servidor' }
   }
 }
 
-export function verifyToken(token: string): { userId: string; email: string } | null {
+export async function logoutUser(): Promise<AuthResponse> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string }
-    return decoded
+    const { error } = await supabase.auth.signOut()
+    
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Erro ao fazer logout' }
+  }
+}
+
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    
+    if (!authUser) return null
+
+    // Buscar dados do perfil
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authUser.id)
+      .single()
+
+    return {
+      id: authUser.id,
+      email: authUser.email!,
+      name: profile?.name || authUser.user_metadata?.name || 'Usuário',
+      created_at: authUser.created_at,
+      is_premium: profile?.is_premium || false,
+      subscription_status: profile?.subscription_status || 'none'
+    }
   } catch (error) {
     return null
   }
 }
 
-export function getUserById(id: string): User | null {
-  const user = users.find(u => u.id === id)
-  if (!user) return null
+export async function updateUserProfile(userId: string, updates: Partial<User>): Promise<AuthResponse> {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', userId)
 
-  const { password_hash: _, ...userWithoutPassword } = user
-  return userWithoutPassword
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Erro ao atualizar perfil' }
+  }
 }
